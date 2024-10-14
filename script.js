@@ -14,7 +14,7 @@ lettersArray.forEach((letter)=>{
 //create words object
 let words={
     programming: ["php", "javascript", "go", "scala", "fortran", "r", "mysql", "python"],
-    movies: ["Shatter Island", "Inception", "", "Interstellar", "Divergent", "Memento", "Coco", "Up"],
+    movies: ["Shatter Island", "Inception", "Interstellar", "Divergent", "Memento", "Coco", "Up"],
     people: ["Albert Einstein", "Hitchcock", "Alexander", "Cleopatra", "Mahatma Ghandi"],
     countries: ["Syria", "Palestine", "Yemen", "Egypt", "Bahrain", "Qatar"]
 }
@@ -46,6 +46,8 @@ let spanGuesses=document.querySelectorAll(".letters-guess span");
 let theDraw=document.querySelector(".hangman-draw");
 //wrong attemps
 let wrongAttemps=0;
+//success attemps
+let success=0;
 //onclick
 lettersContainer.addEventListener("click",(e)=>{
     //set the status
@@ -56,6 +58,7 @@ lettersContainer.addEventListener("click",(e)=>{
         theChosenWord=Array.from(theWord.toLowerCase());
         theChosenWord.forEach((letter,wordIndex)=>{
             if(theClickedLetter===letter){
+                success++;
                 status=true;
                spanGuesses.forEach((span,spanIndex)=>{
                 if(wordIndex==spanIndex){
@@ -64,11 +67,11 @@ lettersContainer.addEventListener("click",(e)=>{
                     }else{
                         span.innerHTML=theClickedLetter;
                     }
-                    
                 }
                })
             }
         })
+        checkSuccess();
         if(status===false){
             wrongAttemps++;
             theDraw.classList.add(`wrong-${wrongAttemps}`);
@@ -80,17 +83,31 @@ lettersContainer.addEventListener("click",(e)=>{
     }
 })
 let restart=document.createElement("span");
+restart.className="restart";
+restart.appendChild(document.createTextNode("Restart"));
 function gameOver(){
     let div=document.createElement("div");
     div.className="pop";
     let span=document.createElement("span");
-    restart.className="restart";
     span.appendChild(document.createTextNode(`The Word is ${theWord}`));
-    restart.appendChild(document.createTextNode("Restart"));
     div.appendChild(span);
     div.appendChild(restart);
     document.body.appendChild(div);
+    document.getElementById("fail").play();
 }
 restart.onclick=()=>{
     window.location.reload();
+}
+function checkSuccess(){
+    if(success==spanGuesses.length){
+        lettersContainer.classList.add("finished");
+        let div=document.createElement("div");
+        div.className="success";
+        let span=document.createElement("span");
+        span.appendChild(document.createTextNode(`Yayy!!`));
+        div.appendChild(span);
+        div.appendChild(restart);
+        document.body.appendChild(div);
+        document.getElementById("success").play();
+    }
 }
